@@ -1,5 +1,6 @@
-import { Section } from "../app/page"; // أو المسار الصحيح لمكان تعريف Section
-// دالة التصدير
+import { Section } from "../app/page";
+
+
 export const exportToJson = (sections) => {
   const dataStr = JSON.stringify(sections, null, 2);
   const blob = new Blob([dataStr], { type: "application/json" });
@@ -12,7 +13,8 @@ export const exportToJson = (sections) => {
   URL.revokeObjectURL(url);
 };
 
-// دالة الاستيراد
+
+
 export const importFromJson = (event, setSections) => {
   const file = event.target.files?.[0];
   if (!file) return;
@@ -23,8 +25,8 @@ export const importFromJson = (event, setSections) => {
       const importedSections = JSON.parse(e.target.result);
       setSections(importedSections);
     } catch (error) {
-      console.error("خطأ في قراءة الملف:", error);
-      alert("الملف غير صالح");
+      console.error("error", error);
+      alert(" غير صالح");
     }
   };
   reader.readAsText(file);

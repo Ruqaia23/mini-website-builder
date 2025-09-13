@@ -32,7 +32,7 @@ export default function HeroTemplate({
 
   return (
     <section className="w-full min-h-64 bg-blue-200 flex flex-col items-center justify-center relative p-4 rounded-md">
-      {/* Remove Button */}
+      {/* Remove  */}
       {onRemove && (
         <button
           onClick={onRemove}
@@ -51,7 +51,7 @@ export default function HeroTemplate({
         />
       )}
 
-      {/* Editable Title */}
+      {/*  Title */}
       <input
         type="text"
         value={localTitle}
@@ -60,7 +60,7 @@ export default function HeroTemplate({
         className="text-3xl font-bold text-center mb-2 w-full max-w-lg outline-none"
       />
 
-      {/* Editable Description */}
+      {/*  Description */}
       <textarea
         value={localDesc}
         onChange={handleDescChange}
