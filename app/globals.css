@@ -1,11 +1,17 @@
 @import "tailwindcss/preflight";
-@import "tailwindcss/utilities";
+@tailwind utilities;
 
+.fixed {
+  position: fixed;
+}
 
 :root {
   --background: #ffffff;
   --foreground: #171717;
 }
+
+/* باقي الكود */
+
 
 @theme inline {
   --color-background: var(--background);
