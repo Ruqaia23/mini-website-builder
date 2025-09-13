@@ -1,6 +1,8 @@
-@import "tailwindcss/preflight";
-@import "tailwindcss/utilities";
+@import "tailwindcss";
 
+.fixed {
+  position: fixed;
+}
 
 :root {
   --background: #ffffff;
