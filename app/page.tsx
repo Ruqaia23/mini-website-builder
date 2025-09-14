@@ -230,6 +230,15 @@ export default function Home() {
                                 updateFeatures={(newFeatures) =>
                                   updateSection(index, { features: newFeatures })
                                 }
+                                updateTitle={(newTitle: string) =>
+                                  updateSection(index, { title: newTitle })
+                                }
+                                updateDescription={(newDesc: string) =>
+                                  updateSection(index, { description: newDesc })
+                                }
+                                // updateLinks={(newLinks: { label: string; url: string }[]) =>
+                                //   updateSection(index, { links: newLinks })
+                                // }
                               />
                             </div>
                           )}
