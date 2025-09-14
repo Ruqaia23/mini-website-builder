@@ -3,14 +3,14 @@
 import { useState, useEffect } from "react";
 
 export default function HeroTemplate({
-  title = "",
+ title = "",
   description = "",
   images = [],
   links = [],
   logo = null,
   onRemove,
   updateTitle,
-  updateDescription
+  updateDescription,
 }) {
   const [localTitle, setLocalTitle] = useState(title);
   const [localDesc, setLocalDesc] = useState(description);
