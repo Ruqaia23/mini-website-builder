@@ -1,11 +1,11 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import NavbarTemplate from "../components/templates/NavbarTemplate";
 import HeroTemplate from "../components/templates/HeroTemplate";
 import FeaturesTemplate from "../components/templates/FeaturesTemplate";
 import FooterTemplate from "../components/templates/FooterTemplate";
-import { DragDropContext, Droppable, Draggable } from "@hello-pangea/dnd";
+import { DragDropContext, Droppable, Draggable, DropResult } from "@hello-pangea/dnd";
 import { defaultImageItem, defaultLinkItem } from "../components/adds";
 import { exportToJson, importFromJson } from "../utils/jsonUtils";
 
@@ -17,6 +17,17 @@ const sectionComponents = {
 
 export default function Home() {
   const [sections, setSections] = useState([]);
+
+  // ====== استرجاع الأقسام من LocalStorage ======
+  useEffect(() => {
+    const saved = localStorage.getItem("sections");
+    if (saved) setSections(JSON.parse(saved));
+  }, []);
+
+  // ====== حفظ الأقسام في LocalStorage عند أي تغيير ======
+  useEffect(() => {
+    localStorage.setItem("sections", JSON.stringify(sections));
+  }, [sections]);
 
   const addSection = (name) => {
     const index = sections.length;
@@ -45,8 +56,7 @@ export default function Home() {
     setSections((prev) => {
       const updated = [...prev];
       const currentProps = updated[index].props;
-      const propsToUpdate =
-        typeof newProps === "function" ? newProps(currentProps) : newProps;
+      const propsToUpdate = typeof newProps === "function" ? newProps(currentProps) : newProps;
       updated[index] = {
         ...updated[index],
         props: {
@@ -98,10 +108,7 @@ export default function Home() {
                 if (label && url && sections.length > 0) {
                   const index = sections.length - 1;
                   updateSection(index, {
-                    links: [
-                      ...(sections[index].props.links || []),
-                      { ...defaultLinkItem, label, url },
-                    ],
+                    links: [...(sections[index].props.links || []), { ...defaultLinkItem, label, url }],
                   });
                 }
               }}
@@ -200,9 +207,7 @@ export default function Home() {
                             >
                               <Component
                                 {...section.props}
-                                updateTitle={(newTitle) =>
-                                  updateSection(index, { title: newTitle })
-                                }
+                                updateTitle={(newTitle) => updateSection(index, { title: newTitle })}
                                 updateDescription={(newDesc) =>
                                   updateSection(index, { description: newDesc })
                                 }
