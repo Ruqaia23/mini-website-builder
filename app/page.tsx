@@ -19,7 +19,6 @@ type FeatureItem = {
   description: string;
 };
 
-
 const sectionComponents = {
   Hero: HeroTemplate,
   Features: FeaturesTemplate,
@@ -33,8 +32,8 @@ type Section = {
   props: {
     title: string;
     description: string;
-    images?: ImageItem[];
-    links?: { label: string; url: string }[];
+    images: ImageItem[];
+    links: { label: string; url: string }[];
     logo?: string;
     features?: FeatureItem[];
     onRemove: () => void;
@@ -101,15 +100,15 @@ export default function Home() {
       </div>
 
       <div className="flex flex-1">
-        {/*//////////// Sidebar ////////// */}
+        {/* Sidebar */}
         <div className="fixed top-[64px] left-0 h-[calc(100vh-64px)] w-64 bg-[#EBEBEB]/95 p-4 flex flex-col gap-4 shadow-2xl overflow-auto rounded-r-lg">
           <h2 className="text-xl font-bold text-center mb-4">Add Sections</h2>
 
           <div className="flex flex-col gap-2">
-            {Object.keys(sectionComponents).map((name) => (
+            {(Object.keys(sectionComponents) as SectionName[]).map((name) => (
               <button
                 key={name}
-                onClick={() => addSection(name as SectionName)}
+                onClick={() => addSection(name)}
                 className="w-full text-start font-medium p-2 rounded hover:bg-gray-200 transition"
               >
                 {name}
@@ -117,9 +116,8 @@ export default function Home() {
             ))}
           </div>
 
-
           <div className="flex flex-row gap-2 mt-4">
-            {/* /////////// Add Link        ////////// */}
+            {/* Add Link */}
             <button
               onClick={() => {
                 const label = prompt("عنوان الرابط");
@@ -136,7 +134,7 @@ export default function Home() {
               <img src="/link.png" alt="Link" className="w-6 h-6 md:w-8 md:h-8" />
             </button>
 
-            {/* ///////// Upload Image  ///////// */}
+            {/* Upload Image */}
             <label className="cursor-pointer flex items-center justify-center rounded-md hover:scale-105 hover:shadow-lg transition-transform duration-200 bg-slate-200 p-2">
               <img src="/add-image.png" alt="Upload" className="w-6 h-6 md:w-8 md:h-8" />
               <input
@@ -151,7 +149,7 @@ export default function Home() {
                       const result = reader.result as string;
                       const index = sections.length - 1;
                       updateSection(index, (prevProps) => ({
-                        images: [...(prevProps.images || []), { ...defaultImageItem, src: result }],
+                        images: [...prevProps.images, { ...defaultImageItem, src: result }],
                       }));
                     };
                     reader.readAsDataURL(file);
@@ -160,7 +158,7 @@ export default function Home() {
               />
             </label>
 
-            {/* ///////// Upload Logo ///////// */}
+            {/* Upload Logo */}
             <label className="cursor-pointer flex items-center justify-center rounded-md hover:scale-105 hover:shadow-lg transition-transform duration-200 bg-purple-200 p-2">
               <span className="text-black text-sm md:text-base mr-2">Logo</span>
               <input
@@ -213,7 +211,7 @@ export default function Home() {
               <Droppable droppableId="sections">
                 {(provided) => (
                   <div {...provided.droppableProps} ref={provided.innerRef} className="space-y-6">
-                    {sections.map((section, index) => {
+                    {sections.map((section: Section, index: number) => {
                       const Component = sectionComponents[section.name];
                       return (
                         <Draggable key={index} draggableId={`section-${index}`} index={index}>
@@ -226,17 +224,12 @@ export default function Home() {
                             >
                               <Component
                                 {...section.props}
-                                // features={section.props.features || []}
-                                // updateFeatures={(newFeatures) =>
-                                //   updateSection(index, { features: newFeatures })
-                                // }
                                 updateTitle={(newTitle: string) =>
                                   updateSection(index, { title: newTitle })
                                 }
                                 updateDescription={(newDesc: string) =>
                                   updateSection(index, { description: newDesc })
                                 }
-
                               />
                             </div>
                           )}
