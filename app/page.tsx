@@ -226,19 +226,17 @@ export default function Home() {
                             >
                               <Component
                                 {...section.props}
-                                features={section.props.features || []}
-                                updateFeatures={(newFeatures) =>
-                                  updateSection(index, { features: newFeatures })
-                                }
+                                // features={section.props.features || []}
+                                // updateFeatures={(newFeatures) =>
+                                //   updateSection(index, { features: newFeatures })
+                                // }
                                 updateTitle={(newTitle: string) =>
                                   updateSection(index, { title: newTitle })
                                 }
                                 updateDescription={(newDesc: string) =>
                                   updateSection(index, { description: newDesc })
                                 }
-                                // updateLinks={(newLinks: { label: string; url: string }[]) =>
-                                //   updateSection(index, { links: newLinks })
-                                // }
+
                               />
                             </div>
                           )}
