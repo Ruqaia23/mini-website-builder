@@ -5,19 +5,9 @@ import NavbarTemplate from "../components/templates/NavbarTemplate";
 import HeroTemplate from "../components/templates/HeroTemplate";
 import FeaturesTemplate from "../components/templates/FeaturesTemplate";
 import FooterTemplate from "../components/templates/FooterTemplate";
-import { DragDropContext, Droppable, Draggable, DropResult } from "@hello-pangea/dnd";
+import { DragDropContext, Droppable, Draggable } from "@hello-pangea/dnd";
 import { defaultImageItem, defaultLinkItem } from "../components/adds";
 import { exportToJson, importFromJson } from "../utils/jsonUtils";
-
-type ImageItem = {
-  src: string;
-  alt?: string;
-};
-
-type FeatureItem = {
-  title: string;
-  description: string;
-};
 
 const sectionComponents = {
   Hero: HeroTemplate,
@@ -25,25 +15,10 @@ const sectionComponents = {
   Footer: FooterTemplate,
 };
 
-type SectionName = keyof typeof sectionComponents;
-
-type Section = {
-  name: SectionName;
-  props: {
-    title: string;
-    description: string;
-    images: ImageItem[];
-    links: { label: string; url: string }[];
-    logo?: string;
-    features?: FeatureItem[];
-    onRemove: () => void;
-  };
-};
-
 export default function Home() {
-  const [sections, setSections] = useState<Section[]>([]);
+  const [sections, setSections] = useState([]);
 
-  const addSection = (name: SectionName) => {
+  const addSection = (name) => {
     const index = sections.length;
     setSections([
       ...sections,
@@ -62,18 +37,16 @@ export default function Home() {
     ]);
   };
 
-  const removeSection = (index: number) => {
+  const removeSection = (index) => {
     setSections(sections.filter((_, i) => i !== index));
   };
 
-  const updateSection = (
-    index: number,
-    newProps: Partial<Section["props"]> | ((prevProps: Section["props"]) => Partial<Section["props"]>)
-  ) => {
+  const updateSection = (index, newProps) => {
     setSections((prev) => {
       const updated = [...prev];
       const currentProps = updated[index].props;
-      const propsToUpdate = typeof newProps === "function" ? newProps(currentProps) : newProps;
+      const propsToUpdate =
+        typeof newProps === "function" ? newProps(currentProps) : newProps;
       updated[index] = {
         ...updated[index],
         props: {
@@ -85,7 +58,7 @@ export default function Home() {
     });
   };
 
-  const onDragEnd = (result: DropResult) => {
+  const onDragEnd = (result) => {
     if (!result.destination) return;
     const items = Array.from(sections);
     const [reordered] = items.splice(result.source.index, 1);
@@ -105,7 +78,7 @@ export default function Home() {
           <h2 className="text-xl font-bold text-center mb-4">Add Sections</h2>
 
           <div className="flex flex-col gap-2">
-            {(Object.keys(sectionComponents) as SectionName[]).map((name) => (
+            {Object.keys(sectionComponents).map((name) => (
               <button
                 key={name}
                 onClick={() => addSection(name)}
@@ -125,7 +98,10 @@ export default function Home() {
                 if (label && url && sections.length > 0) {
                   const index = sections.length - 1;
                   updateSection(index, {
-                    links: [...(sections[index].props.links || []), { ...defaultLinkItem, label, url }],
+                    links: [
+                      ...(sections[index].props.links || []),
+                      { ...defaultLinkItem, label, url },
+                    ],
                   });
                 }
               }}
@@ -146,10 +122,10 @@ export default function Home() {
                   if (file && sections.length > 0) {
                     const reader = new FileReader();
                     reader.onload = () => {
-                      const result = reader.result as string;
+                      const result = reader.result;
                       const index = sections.length - 1;
                       updateSection(index, (prevProps) => ({
-                        images: [...prevProps.images, { ...defaultImageItem, src: result }],
+                        images: [...(prevProps.images || []), { ...defaultImageItem, src: result }],
                       }));
                     };
                     reader.readAsDataURL(file);
@@ -170,7 +146,7 @@ export default function Home() {
                   if (!file || sections.length === 0) return;
                   const reader = new FileReader();
                   reader.onload = () => {
-                    const result = reader.result as string;
+                    const result = reader.result;
                     const index = sections.map((s) => s.name).lastIndexOf("Hero");
                     if (index === -1) return;
                     updateSection(index, { logo: result });
@@ -211,7 +187,7 @@ export default function Home() {
               <Droppable droppableId="sections">
                 {(provided) => (
                   <div {...provided.droppableProps} ref={provided.innerRef} className="space-y-6">
-                    {sections.map((section: Section, index: number) => {
+                    {sections.map((section, index) => {
                       const Component = sectionComponents[section.name];
                       return (
                         <Draggable key={index} draggableId={`section-${index}`} index={index}>
@@ -224,10 +200,10 @@ export default function Home() {
                             >
                               <Component
                                 {...section.props}
-                                updateTitle={(newTitle: string) =>
+                                updateTitle={(newTitle) =>
                                   updateSection(index, { title: newTitle })
                                 }
-                                updateDescription={(newDesc: string) =>
+                                updateDescription={(newDesc) =>
                                   updateSection(index, { description: newDesc })
                                 }
                               />
