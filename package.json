@@ -2,6 +2,7 @@
   "name": "mini-website-builder",
   "version": "0.1.0",
   "private": true,
+  "type": "module",
   "scripts": {
     "dev": "next dev --turbopack",
     "build": "next build --turbopack",
@@ -14,9 +15,11 @@
     "next": "15.5.3",
     "react": "18.2.0",
     "react-dom": "18.2.0",
-    "tailwindcss": "^3.4.17",
+    "tailwindcss": "^4.1.13",
     "autoprefixer": "^10.4.21",
-    "postcss": "^8.5.6"
+    "postcss": "^8.5.6",
+    "@tailwindcss/postcss": "^4.1.13"
+
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",
@@ -25,7 +28,6 @@
     "@types/react-dom": "^18",
     "eslint": "^9",
     "eslint-config-next": "15.5.3",
-    "@tailwindcss/postcss": "^4.1.13",
     "typescript": "^5"
   }
 }
