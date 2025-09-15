@@ -29,8 +29,8 @@ export default function FeaturesTemplate({ onRemove, features: initialFeatures, 
   };
 
   return (
-    <section className="py-16 px-4 bg-gray-50 relative">
-      <h2 className="text-2xl font-bold mb-4 text-center">Features Section</h2>
+    <section className="py-10 md:py-16 px-4 bg-gray-50 relative">
+      <h2 className="text-xl md:text-2xl font-bold mb-4 text-center">Features Section</h2>
 
       {onRemove && (
         <button onClick={onRemove} className="absolute top-2 right-2 px-2 py-1">
@@ -38,16 +38,16 @@ export default function FeaturesTemplate({ onRemove, features: initialFeatures, 
         </button>
       )}
 
-      <div className="max-w-6xl mx-auto grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
+      <div className="max-w-6xl mx-auto grid gap-4 md:gap-8 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
         {features.map((feature, index) => (
-          <div key={index} className="bg-white p-6 rounded-lg shadow flex flex-col items-center">
+          <div key={index} className="bg-white p-4 md:p-6 rounded-lg shadow flex flex-col items-center">
             <input
-              className="text-xl font-bold mb-2 text-center outline-none w-full"
+              className="text-lg md:text-xl font-bold mb-2 text-center outline-none w-full"
               value={feature.title}
               onChange={(e) => updateFeature(index, "title", e.target.value)}
             />
             <textarea
-              className="text-gray-600 text-center outline-none w-full"
+              className="text-sm md:text-base text-gray-600 text-center outline-none w-full"
               value={feature.description}
               onChange={(e) => updateFeature(index, "description", e.target.value)}
             />

@@ -17,14 +17,13 @@ const sectionComponents = {
 
 export default function Home() {
   const [sections, setSections] = useState([]);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
-  // ====== استرجاع الأقسام من LocalStorage ======
   useEffect(() => {
     const saved = localStorage.getItem("sections");
     if (saved) setSections(JSON.parse(saved));
   }, []);
 
-  // ====== حفظ الأقسام في LocalStorage عند أي تغيير ======
   useEffect(() => {
     localStorage.setItem("sections", JSON.stringify(sections));
   }, [sections]);
@@ -76,16 +75,70 @@ export default function Home() {
     setSections(items);
   };
 
+  const getLastHeroIndex = () => sections.map((s) => s.name).lastIndexOf("Hero");
+
   return (
-    <div className="flex flex-col h-screen bg-[#F1F1F1]">
+    <div className="flex flex-col min-h-screen bg-[#F1F1F1]">
       <div className="sticky top-0 z-50">
         <NavbarTemplate />
       </div>
 
+      {/* Mobile actions bar */}
+      <div className="flex md:hidden items-center gap-2 p-3 bg-[#EBEBEB] sticky top-[64px] z-40 shadow">
+        <button
+          onClick={() => setMobileMenuOpen((v) => !v)}
+          className="px-3 py-2 rounded-md bg-gray-200 text-sm font-medium"
+        >
+          الأقسام
+        </button>
+        <div className="ml-auto flex items-center gap-2">
+          <button
+            onClick={() => {
+              const index = getLastHeroIndex();
+              if (index === -1) return alert("أضف قسم Hero أولاً");
+              const label = prompt("عنوان الرابط");
+              const url = prompt("أدخل الرابط");
+              if (label && url) {
+                updateSection(index, (prev) => ({
+                  links: [...(prev.links || []), { ...defaultLinkItem, label, url }],
+                }));
+              }
+            }}
+            className="rounded-md bg-slate-200 p-2"
+          >
+            <img src="/link.png" alt="Link" className="w-5 h-5" />
+          </button>
+          <label className="cursor-pointer rounded-md bg-slate-200 p-2">
+            <img src="/add-image.png" alt="Upload" className="w-5 h-5" />
+            <input
+              type="file"
+              accept="image/*"
+              className="hidden"
+              onChange={(e) => {
+                const index = getLastHeroIndex();
+                if (index === -1) return alert("أضف قسم Hero أولاً");
+                const file = e.target.files?.[0];
+                if (file) {
+                  const reader = new FileReader();
+                  reader.onload = () => {
+                    const result = reader.result;
+                    updateSection(index, (prevProps) => ({
+                      images: [...(prevProps.images || []), { ...defaultImageItem, src: result }],
+                    }));
+                  };
+                  reader.readAsDataURL(file);
+                }
+                e.currentTarget.value = "";
+              }}
+            />
+          </label>
+        </div>
+      </div>
+
       <div className="flex flex-1">
         {/* Sidebar */}
-        <div className="fixed top-[64px] left-0 h-[calc(100vh-64px)] w-64 bg-[#EBEBEB]/95 p-4 flex flex-col gap-4 shadow-2xl overflow-auto rounded-r-lg">
-          <h2 className="text-xl font-bold text-center mb-4">Add Sections</h2>
+        <div className="hidden md:flex md:fixed top-[64px] left-0 h-[calc(100vh-64px)] w-64 bg-[#EBEBEB]/95 p-4 flex-col gap-4 shadow-2xl overflow-auto rounded-r-lg">
+          <h2 className="text-xl font-bold text-center mb-4 mt-2">Add Sections</h2>
 
           <div className="flex flex-col gap-2">
             {Object.keys(sectionComponents).map((name) => (
@@ -103,13 +156,14 @@ export default function Home() {
             {/* Add Link */}
             <button
               onClick={() => {
+                const index = getLastHeroIndex();
+                if (index === -1) return alert("أضف قسم Hero أولاً");
                 const label = prompt("عنوان الرابط");
                 const url = prompt("أدخل الرابط");
-                if (label && url && sections.length > 0) {
-                  const index = sections.length - 1;
-                  updateSection(index, {
-                    links: [...(sections[index].props.links || []), { ...defaultLinkItem, label, url }],
-                  });
+                if (label && url) {
+                  updateSection(index, (prev) => ({
+                    links: [...(prev.links || []), { ...defaultLinkItem, label, url }],
+                  }));
                 }
               }}
               className="flex items-center justify-center rounded-md bg-slate-200 hover:scale-105 transition-transform p-2"
@@ -125,18 +179,20 @@ export default function Home() {
                 accept="image/*"
                 className="hidden"
                 onChange={(e) => {
+                  const index = getLastHeroIndex();
+                  if (index === -1) return alert("أضف قسم Hero أولاً");
                   const file = e.target.files?.[0];
-                  if (file && sections.length > 0) {
+                  if (file) {
                     const reader = new FileReader();
                     reader.onload = () => {
                       const result = reader.result;
-                      const index = sections.length - 1;
                       updateSection(index, (prevProps) => ({
                         images: [...(prevProps.images || []), { ...defaultImageItem, src: result }],
                       }));
                     };
                     reader.readAsDataURL(file);
                   }
+                  e.currentTarget.value = "";
                 }}
               />
             </label>
@@ -159,6 +215,7 @@ export default function Home() {
                     updateSection(index, { logo: result });
                   };
                   reader.readAsDataURL(file);
+                  e.currentTarget.value = "";
                 }}
               />
             </label>
@@ -187,13 +244,33 @@ export default function Home() {
           </div>
         </div>
 
+        {/* Mobile drawer */}
+        {mobileMenuOpen && (
+          <div className="md:hidden fixed inset-0 z-50 bg-black/20" onClick={() => setMobileMenuOpen(false)}>
+            <div className="absolute left-0 top-[64px] bottom-0 w-72 bg-[#EBEBEB] p-4 shadow-2xl overflow-auto">
+              <h2 className="text-lg font-bold text-center mb-4 mt-1">Add Sections</h2>
+              <div className="flex flex-col gap-2">
+                {Object.keys(sectionComponents).map((name) => (
+                  <button
+                    key={name}
+                    onClick={() => { addSection(name); setMobileMenuOpen(false); }}
+                    className="w-full text-start font-medium p-2 rounded hover:bg-gray-200 transition"
+                  >
+                    {name}
+                  </button>
+                ))}
+              </div>
+            </div>
+          </div>
+        )}
+
         {/* Preview */}
-        <div className="flex-1 ml-64 p-8 overflow-auto">
-          <div className="max-w-5xl mx-auto bg-white text-black shadow-lg rounded-xl p-8 space-y-6">
+        <div className="flex-1 md:ml-64 p-4 md:p-8 overflow-auto">
+          <div className="w-full max-w-5xl mx-auto bg-white text-black shadow-lg rounded-xl p-4 md:p-8 space-y-6">
             <DragDropContext onDragEnd={onDragEnd}>
               <Droppable droppableId="sections">
                 {(provided) => (
-                  <div {...provided.droppableProps} ref={provided.innerRef} className="space-y-6">
+                  <div {...provided.droppableProps} ref={provided.innerRef} className="space-y-4 md:space-y-6">
                     {sections.map((section, index) => {
                       const Component = sectionComponents[section.name];
                       return (
@@ -203,7 +280,7 @@ export default function Home() {
                               ref={provided.innerRef}
                               {...provided.draggableProps}
                               {...provided.dragHandleProps}
-                              className="border border-gray-200 rounded-lg shadow p-4 bg-gray-50"
+                              className="border border-gray-200 rounded-lg shadow p-3 md:p-4 bg-gray-50"
                             >
                               <Component
                                 {...section.props}

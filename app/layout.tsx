@@ -24,11 +24,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <head>
-        {/* إضافة Tailwind عبر CDN */}
-        <link
-          href="https://cdn.jsdelivr.net/npm/tailwindcss@3.3.2/dist/tailwind.min.css"
-          rel="stylesheet"
-        />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
       </head>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}

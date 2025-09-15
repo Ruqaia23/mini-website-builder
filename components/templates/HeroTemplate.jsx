@@ -47,7 +47,7 @@ export default function HeroTemplate({
         <img
           src={logo}
           alt="Logo"
-          className="absolute top-2 left-2 w-12 h-12 object-contain rounded"
+          className="absolute top-2 left-2 w-10 h-10 md:w-12 md:h-12 object-contain rounded"
         />
       )}
 
@@ -57,7 +57,7 @@ export default function HeroTemplate({
         value={localTitle}
         onChange={handleTitleChange}
         placeholder="Hero Title"
-        className="text-3xl font-bold text-center mb-2 w-full max-w-lg outline-none"
+        className="text-2xl md:text-4xl font-bold text-center mb-2 w-full max-w-md md:max-w-lg outline-none"
       />
 
       {/*  Description */}
@@ -65,19 +65,19 @@ export default function HeroTemplate({
         value={localDesc}
         onChange={handleDescChange}
         placeholder="Hero Description"
-        className="text-center w-full max-w-lg outline-none"
+        className="text-sm md:text-base text-center w-full max-w-md md:max-w-lg outline-none"
       />
 
       {/* Images */}
       {images.length > 0 && (
-        <div className="flex gap-2 flex-wrap mt-4 justify-center">
+        <div className="flex gap-2 md:gap-3 flex-wrap mt-4 justify-center">
           {images.map((img, i) =>
             img?.src ? (
               <img
                 key={i}
                 src={img.src}
                 alt={img.alt || `img-${i}`}
-                className="w-20 h-20 object-cover rounded-md border"
+                className="w-16 h-16 md:w-20 md:h-20 object-cover rounded-md border"
               />
             ) : null
           )}
@@ -86,7 +86,7 @@ export default function HeroTemplate({
 
       {/* Links */}
       {links.length > 0 && (
-        <div className="mt-4 flex gap-4">
+        <div className="mt-4 flex flex-wrap gap-3 md:gap-4 justify-center">
           {links.map((link, i) =>
             link?.url ? (
               <a
@@ -94,7 +94,7 @@ export default function HeroTemplate({
                 href={link.url}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-blue-600 underline"
+                className="text-sm md:text-base text-blue-700 underline break-words"
               >
                 {link.label}
               </a>
